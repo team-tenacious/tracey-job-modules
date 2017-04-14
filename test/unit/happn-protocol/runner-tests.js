@@ -34,6 +34,9 @@ describe('unit - happn-protocol job-runner', function () {
             it('successfully executes', function (done) {
 
                 var runner = new Runner();
+                runner.start(function(e, result){
+                   done(e, result);
+                });
 
             });
 
