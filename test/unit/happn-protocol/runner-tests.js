@@ -2,6 +2,7 @@ var expect = require('expect.js');
 var path = require('path');
 
 var Dockeriser = require("../../../lib/utils/dockeriser");
+var Archiver = require('../../../lib/utils/archiver');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
 var Mocker = require('mini-mock');
@@ -22,6 +23,10 @@ describe('unit - happn-protocol job-runner', function () {
                 .withAsyncStub("runContainerAndReport")
                 .create();
 
+            this.__mockArchiver = mocker.mock(Archiver.prototype)
+                .withAsyncStub("createArchive")
+                .create();
+
             done();
         });
 
@@ -33,9 +38,19 @@ describe('unit - happn-protocol job-runner', function () {
 
             it('successfully executes', function (done) {
 
-                var runner = new Runner();
-                runner.start(function(e, result){
-                   done(e, result);
+                var self = this;
+
+                var mockJob = {folder: path.sep + "blah"};
+
+                var runner = new Runner(mockJob, this.__mockDockeriser, this.__mockArchiver);
+
+                runner.start(function (e, result) {
+
+                    expect(self.__mockDockeriser.recorder['buildImage'].calls).to.equal(1);
+                    expect(self.__mockDockeriser.recorder['createContainer'].calls).to.equal(1);
+                    expect(self.__mockDockeriser.recorder['runContainerAndReport'].calls).to.equal(1);
+                    expect(self.__mockArchiver.recorder['createArchive'].calls).to.equal(1);
+                    done(e, result);
                 });
 
             });
