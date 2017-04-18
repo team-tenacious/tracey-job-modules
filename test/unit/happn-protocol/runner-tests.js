@@ -46,10 +46,11 @@ describe('unit - happn-protocol job-runner', function () {
 
                 runner.start(function (e, result) {
 
+                    expect(self.__mockArchiver.recorder['createArchive'].calls).to.equal(1);
                     expect(self.__mockDockeriser.recorder['buildImage'].calls).to.equal(1);
                     expect(self.__mockDockeriser.recorder['createContainer'].calls).to.equal(1);
                     expect(self.__mockDockeriser.recorder['runContainerAndReport'].calls).to.equal(1);
-                    expect(self.__mockArchiver.recorder['createArchive'].calls).to.equal(1);
+
                     done(e, result);
                 });
 
