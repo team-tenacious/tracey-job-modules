@@ -8,7 +8,7 @@ var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
 describe('unit - happn-protocol job-runner', function () {
 
-    this.timeout(120000);
+    this.timeout(1200000);
 
     context('', function () {
 

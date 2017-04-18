@@ -27,18 +27,19 @@ ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 ## Create home dir and copy tarball
-RUN mkdir -p home
-COPY tmp/happn-protocol.tar home
-
-# extract tarball
-#RUN tar -xvf home/happn-protocol.tar -C home
-RUN tar -xvf home/happn-protocol.tar home
-
-# Install npm dependencies
-RUN cd /home/happn-protocol && npm install
+RUN mkdir -p home/happn-protocol
 
 ### Set up working directory
-WORKDIR /home/happn-protocol
+WORKDIR /home/happn-protocol/
+
+COPY /tmp/happn-protocol.tar .
+
+# extract tarball
+RUN pwd && tar -xvf happn-protocol.tar
+
+# Install npm dependencies
+RUN npm install
+
 
 # CMD ping localhost
 CMD node server >> server.log
