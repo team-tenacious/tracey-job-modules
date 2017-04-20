@@ -24,7 +24,7 @@ describe('unit - happn-protocol job-runner', function () {
                 .create();
 
             this.__mockArchiver = mocker.mock(Archiver.prototype)
-                .withAsyncStub("createArchive")
+                .withAsyncStub("createArchive", [null, 'blah'])
                 .create();
 
             done();
