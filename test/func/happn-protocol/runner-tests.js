@@ -40,10 +40,15 @@ describe('unit - happn-protocol job-runner', function () {
                     var runner = new Runner(job, self.__dockeriser, self.__archiver);
 
                     runner.start(function (e, result) {
-                        done(e, result);
-                    });
 
-                    //done();
+                        if(e)
+                            return done(e);
+
+                        if(result.json.statusCode != 200)
+                            return done(result);
+
+                        done();
+                    });
                 })
             });
 
