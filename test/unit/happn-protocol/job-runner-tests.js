@@ -1,7 +1,7 @@
 var expect = require('expect.js');
 var path = require('path');
 
-var Comparer = require("../../../lib/utils/comparer");
+var Giteriser = require("../../../lib/utils/giteriser");
 var Commander = require('../../../lib/utils/commander');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
@@ -17,8 +17,11 @@ describe('unit - happn-protocol job-runner', function () {
 
             var mocker = new Mocker();
 
-            this.__mockComparer = mocker.mock(Comparer.prototype)
-                .withAsyncStub("fileCompare")
+            this.__mockGiteriser = mocker.mock(Giteriser.prototype)
+                .withAsyncStub("add")
+                .withAsyncStub("commit")
+                .withAsyncStub("status", [null, {current: 'test-branch'}])
+                .withAsyncStub("push")
                 .create();
 
             this.__mockCommander = mocker.mock(Commander.prototype)
@@ -40,11 +43,14 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var mockJob = {folder: path.sep + "blah"};
 
-                var runner = new Runner(mockJob, this.__mockCommander, this.__mockComparer);
+                var runner = new Runner(mockJob, this.__mockCommander, this.__mockGiteriser);
 
                 runner.start(function (e, result) {
 
-                    expect(self.__mockComparer.recorder['fileCompare'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['add'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['commit'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['status'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['push'].calls).to.equal(1);
                     expect(self.__mockCommander.recorder['run'].calls).to.equal(2);
 
                     done(e, result);
