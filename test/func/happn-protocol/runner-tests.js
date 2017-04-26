@@ -1,9 +1,8 @@
 var expect = require('expect.js');
 var path = require('path');
+var command = require('node-cmd');
 
-var GitUtils = require('../../lib/git-utils');
-var Dockeriser = require("../../../lib/utils/dockeriser");
-var Archiver = require('../../../lib/utils/archiver');
+var Giteriser = require('../../../lib/utils/giteriser');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
 describe('unit - happn-protocol job-runner', function () {
@@ -14,11 +13,30 @@ describe('unit - happn-protocol job-runner', function () {
 
         beforeEach('setup', function (done) {
 
-            this.__gitUtils = new GitUtils();
-            this.__dockeriser = new Dockeriser();
-            this.__archiver = new Archiver();
+            var self = this;
+            this.__giteriser = new Giteriser();
 
-            done();
+            this.__config = {github: {user: process.env.GITHUB_USER, token: process.env.GITHUB_TOKEN}};
+
+            this.__job = {
+                repo: "https://github.com/happner/happn-protocol.git",
+                folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happn-protocol')
+            };
+
+            // cleanup - CAREFUL!!!
+            command.get('rm -R ' + self.__job.folder, function(err, data, stderr){
+
+                if(err)
+                    console.log(err);
+
+                // clone the repo to temp
+                self.__giteriser.clone(self.__job.repo, self.__job.folder, function (e, result) {
+                    if (e)
+                        done(e);
+
+                    done();
+                });
+            });
         });
 
         afterEach('stop', function (done) {
@@ -31,27 +49,16 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var self = this;
 
-                var job = {
-                    repo: "https://github.com/happner/happn-protocol.git",
-                    folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happn-protocol')
-                };
+                var runner = new Runner(self.__job, self.__config, self.__giteriser);
 
-                self.__gitUtils.clone(job.repo, job.folder, function (e, result) {
-                    var runner = new Runner(job, self.__dockeriser, self.__archiver);
+                runner.start(function (e, result) {
 
-                    runner.start(function (e, result) {
+                    if (e)
+                        return done(e);
 
-                        if(e)
-                            return done(e);
-
-                        if(result.json.statusCode != 200)
-                            return done(result);
-
-                        done();
-                    });
-                })
+                    done();
+                });
             });
-
         });
     });
 });

@@ -6,6 +6,7 @@ ARG NVM_DIR=$HOME/.nvm
 ARG NVM_VERSION=0.32.0
 ARG NODE_VERSION=4.6.2
 ARG BUILD_VERSION=0.0.0
+ARG GITHUB_TOKEN=$GITHUB_TOKEN
 
 #### General ####
 RUN apt-get update && apt-get install -y curl wget git git-core curl build-essential
@@ -40,11 +41,11 @@ RUN pwd && tar -xvf happn-protocol.tar
 # Install npm dependencies
 RUN npm install
 
+RUN npm run describe
 
-# CMD ping localhost
-CMD node server >> server.log
+RUN touch runner_log.txt && chmod 777 runner_log.txt
 
-# CMD ["/bin/bash"]
+#CMD ['/bin/bash']
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
