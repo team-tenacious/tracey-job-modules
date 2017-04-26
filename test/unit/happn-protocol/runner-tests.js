@@ -1,8 +1,8 @@
 var expect = require('expect.js');
 var path = require('path');
 
-var Dockeriser = require("../../../lib/utils/dockeriser");
-var Archiver = require('../../../lib/utils/archiver');
+var Giteriser = require("../../../lib/utils/giteriser");
+var Commander = require('../../../lib/utils/commander');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
 var Mocker = require('mini-mock');
@@ -17,14 +17,13 @@ describe('unit - happn-protocol job-runner', function () {
 
             var mocker = new Mocker();
 
-            this.__mockDockeriser = mocker.mock(Dockeriser.prototype)
-                .withAsyncStub("buildImage")
-                .withAsyncStub("createContainer")
-                .withAsyncStub("runContainerAndReport")
+            this.__mockGiteriser = mocker.mock(Giteriser.prototype)
+                .withAsyncStub("add")
+                .withAsyncStub("commit")
                 .create();
 
-            this.__mockArchiver = mocker.mock(Archiver.prototype)
-                .withAsyncStub("createArchive", [null, 'blah'])
+            this.__mockCommander = mocker.mock(Commander.prototype)
+                .withAsyncStub("run")
                 .create();
 
             done();
@@ -42,14 +41,13 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var mockJob = {folder: path.sep + "blah"};
 
-                var runner = new Runner(mockJob, this.__mockDockeriser, this.__mockArchiver);
+                var runner = new Runner(mockJob, this.__mockCommander, this.__mockGiteriser);
 
                 runner.start(function (e, result) {
 
-                    expect(self.__mockArchiver.recorder['createArchive'].calls).to.equal(1);
-                    expect(self.__mockDockeriser.recorder['buildImage'].calls).to.equal(1);
-                    expect(self.__mockDockeriser.recorder['createContainer'].calls).to.equal(1);
-                    expect(self.__mockDockeriser.recorder['runContainerAndReport'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['add'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['commit'].calls).to.equal(1);
+                    expect(self.__mockCommander.recorder['run'].calls).to.equal(2);
 
                     done(e, result);
                 });
