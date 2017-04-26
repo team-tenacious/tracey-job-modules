@@ -1,30 +1,9 @@
-/*
- { id: '1493203392599_46632f14-4e4c-4330-a949-0871d5838f43',
- message:
- { repo: 'happner/happn-protocol',
- event:
- { type: 'push',
- name: 'happn-protocol',
- owner: 'happner',
- branch: 'master' },
- config:
- { owner: 'happner',
- name: 'happn-protocol',
- node_js: [Object],
- job_type: 'happn-protocol',
- events: [Object] },
- job_type:
- { name: 'happn-protocol',
- path: '/Users/grant/Projects/Tenacious/NSoft/tracey/lib/job_types/happn-protocol/runner' },
- folder: '/Users/grant/Projects/Tenacious/NSoft/tracey/tracey_job_folder/happner/happn-protocol/1493203392599_46632f14-4e4c-4330-a949-0871d5838f43' } }
- */
-
 var expect = require('expect.js');
 var path = require('path');
 
 var JobParser = require('../../../lib/parsers/job-parser');
 
-describe('unit - happn-protocol job-runner', function () {
+describe('unit - happn-protocol job-parser', function () {
 
     this.timeout(30000);
 
@@ -65,13 +44,13 @@ describe('unit - happn-protocol job-runner', function () {
                             name: 'happn-protocol',
                             path: '/Users/grant/Projects/Tenacious/NSoft/tracey/lib/job_types/happn-protocol/runner'
                         },
-                        folder: '/Users/grant/Projects/Tenacious/NSoft/tracey/tracey_job_folder/happner/happn-protocol/1493203392599_46632f14-4e4c-4330-a949-0871d5838f43'
+                        folder: '/Users/Bob/tracey/tracey_job_folder/happner/happn-protocol/1493203392599_46632f14-4e4c-4330-a949-0871d5838f43'
                     }
                 };
 
                 var result = this.__parser.parseJob(mockJob);
 
-                expect(result.folder).to.be('/Users/grant/Projects/Tenacious/NSoft/tracey/tracey_job_folder/happner/happn-protocol/1493203392599_46632f14-4e4c-4330-a949-0871d5838f43')
+                expect(result.folder).to.be('/Users/Bob/tracey/tracey_job_folder/happner/happn-protocol/1493203392599_46632f14-4e4c-4330-a949-0871d5838f43');
 
                 done();
             });
