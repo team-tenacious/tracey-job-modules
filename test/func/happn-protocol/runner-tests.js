@@ -1,8 +1,8 @@
 var expect = require('expect.js');
 var path = require('path');
-var command = require('node-cmd');
 
 var Giteriser = require('../../../lib/utils/giteriser');
+var Commander = require('../../../lib/utils/commander');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
 describe('unit - happn-protocol job-runner', function () {
@@ -11,12 +11,11 @@ describe('unit - happn-protocol job-runner', function () {
 
     context('', function () {
 
-        beforeEach('setup', function (done) {
+        before('setup', function (done) {
 
             var self = this;
             this.__giteriser = new Giteriser();
-
-            this.__config = {github: {user: process.env.GITHUB_USER, token: process.env.GITHUB_TOKEN}};
+            this.__commander = new Commander();
 
             this.__job = {
                 repo: "https://github.com/happner/happn-protocol.git",
@@ -24,22 +23,22 @@ describe('unit - happn-protocol job-runner', function () {
             };
 
             // cleanup - CAREFUL!!!
-            command.get('rm -R ' + self.__job.folder, function(err, data, stderr){
+            this.__commander.run('rm -R ' + self.__job.folder, function (err, result) {
 
-                if(err)
+                if (err)
                     console.log(err);
 
                 // clone the repo to temp
-                self.__giteriser.clone(self.__job.repo, self.__job.folder, function (e, result) {
-                    if (e)
-                        done(e);
+                self.__giteriser.clone(self.__job.repo, self.__job.folder, function (err, result) {
+                    if (err)
+                        done(err);
 
                     done();
                 });
             });
         });
 
-        afterEach('stop', function (done) {
+        after('stop', function (done) {
             done();
         });
 
@@ -49,7 +48,7 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var self = this;
 
-                var runner = new Runner(self.__job, self.__config, self.__giteriser);
+                var runner = new Runner(self.__job, self.__commander, self.__giteriser);
 
                 runner.start(function (e, result) {
 
