@@ -2,6 +2,7 @@ var expect = require('expect.js');
 var path = require('path');
 
 var Giteriser = require('../../../lib/utils/giteriser');
+var Comparer = require('../../../lib/utils/comparer');
 var Commander = require('../../../lib/utils/commander');
 var Runner = require("../../../lib/job-runners/happn-protocol/runner");
 
@@ -15,6 +16,7 @@ describe('unit - happn-protocol job-runner', function () {
 
             var self = this;
             this.__giteriser = new Giteriser();
+            this.__comparer = new Comparer();
             this.__commander = new Commander();
 
             this.__job = {
@@ -48,13 +50,14 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var self = this;
 
-                var runner = new Runner(self.__job, self.__commander, self.__giteriser);
+                var runner = new Runner(self.__job, self.__commander, self.__comparer);
 
                 runner.start(function (e, result) {
 
                     if (e)
                         return done(e);
 
+                    expect(result.length).not.to.be(0);
                     done();
                 });
             });
