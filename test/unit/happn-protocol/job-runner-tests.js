@@ -21,6 +21,7 @@ describe('unit - happn-protocol job-runner', function () {
                 .withAsyncStub("add")
                 .withAsyncStub("commit")
                 .withAsyncStub("status", [null, {current: 'test-branch'}])
+                .withAsyncStub("diff")
                 .withAsyncStub("push")
                 .create();
 
@@ -50,6 +51,7 @@ describe('unit - happn-protocol job-runner', function () {
                     expect(self.__mockGiteriser.recorder['add'].calls).to.equal(1);
                     expect(self.__mockGiteriser.recorder['commit'].calls).to.equal(1);
                     expect(self.__mockGiteriser.recorder['status'].calls).to.equal(1);
+                    expect(self.__mockGiteriser.recorder['diff'].calls).to.equal(1);
                     expect(self.__mockGiteriser.recorder['push'].calls).to.equal(1);
                     expect(self.__mockCommander.recorder['run'].calls).to.equal(2);
 
