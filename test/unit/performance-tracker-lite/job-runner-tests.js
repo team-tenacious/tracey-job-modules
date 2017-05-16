@@ -23,7 +23,9 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var mocker = new Mocker();
 
             this.__mockTester = mocker.mock(Tester.prototype)
-                .withSyncStub("test")
+                .withSyncStub("test", [null, new Promise(function (resolve, reject) {
+                    resolve({})
+                })])
                 .create();
 
             this.__mockVersionUtil = mocker.mock(VersionUtil.prototype)
@@ -35,7 +37,9 @@ describe('unit - performance-tracker-lite job-runner', function () {
                 .create();
 
             this.__mockUploader = mocker.mock(Uploader.prototype)
-                .withSyncStub("upload")
+                .withSyncStub("upload", [null, new Promise(function (resolve, reject) {
+                    resolve({});
+                })])
                 .create();
 
             this.__mockLogUpdater = mocker.mock(LogUpdater.prototype)
