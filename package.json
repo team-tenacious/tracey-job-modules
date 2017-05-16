@@ -31,6 +31,7 @@
     "events": "^1.1.1",
     "fast-diff": "^1.1.1",
     "figures": "^2.0.0",
+    "happner-serial-mocha": "git+https://github.com/happner/happner-serial-mocha.git",
     "log-update": "^2.0.0",
     "node-cmd": "^3.0.0",
     "simple-git": "^1.70.0",

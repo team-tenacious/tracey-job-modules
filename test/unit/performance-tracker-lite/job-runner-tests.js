@@ -1,7 +1,7 @@
 var expect = require('expect.js');
 var path = require('path');
 
-var Tester = require('../../../lib/job-runners/performance-tracker-lite/test');
+var Tester = require('../../../lib/utils/tester');
 var Runner = require("../../../lib/job-runners/performance-tracker-lite/runner");
 var VersionUtil = require("../../../lib/utils/versioner");
 var StateUpdater = require("../../../lib/utils/state-updater");
@@ -23,9 +23,10 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var mocker = new Mocker();
 
             this.__mockTester = mocker.mock(Tester.prototype)
-                .withSyncStub("test", [null, new Promise(function (resolve, reject) {
-                    resolve({})
-                })])
+                .withSyncStub("test", new Promise(function (resolve, reject) {
+                    console.log('TESTING 123');
+                    resolve({blah: 'blah'})
+                }))
                 .create();
 
             this.__mockVersionUtil = mocker.mock(VersionUtil.prototype)
@@ -37,9 +38,9 @@ describe('unit - performance-tracker-lite job-runner', function () {
                 .create();
 
             this.__mockUploader = mocker.mock(Uploader.prototype)
-                .withSyncStub("upload", [null, new Promise(function (resolve, reject) {
+                .withSyncStub("upload", new Promise(function (resolve, reject) {
                     resolve({});
-                })])
+                }))
                 .create();
 
             this.__mockLogUpdater = mocker.mock(LogUpdater.prototype)
@@ -81,6 +82,9 @@ describe('unit - performance-tracker-lite job-runner', function () {
                         event: {
                             owner: 'Bob'
                         }
+                    },
+                    config: {
+                        testFolder: '/'
                     }
                 };
 
