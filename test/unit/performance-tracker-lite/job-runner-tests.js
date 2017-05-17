@@ -127,11 +127,12 @@ describe('unit - performance-tracker-lite job-runner', function () {
 
             runner.start(function (e, result) {
 
-                // assertions
-                expect(self.__mockTester.recorder['test'].calls).to.equal(1);
-                expect(self.__mockVersionUtil.recorder['getVersions'].calls).to.equal(1);
-
                 if (e) {
+
+                    // assertions
+                    expect(self.__mockTester.recorder['test'].calls).to.equal(1);
+                    expect(self.__mockVersionUtil.recorder['getVersions'].calls).to.equal(1);
+
                     expect(e).to.eql(expectedError);
                     return done();
                 }
@@ -170,7 +171,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
                 if (e) {
                     expect(e).to.eql(expectedError);
                     return done();
-                }
+                }else
 
                 done(new Error('Error was expected!'));
             });
