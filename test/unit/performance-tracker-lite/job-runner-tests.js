@@ -1,6 +1,7 @@
 var expect = require('expect.js');
 var path = require('path');
 
+var Commander = require('../../../lib/utils/commander');
 var Tester = require('../../../lib/utils/tester');
 var Runner = require("../../../lib/job-runners/performance-tracker-lite/runner");
 var VersionUtil = require("../../../lib/utils/versioner");
@@ -21,6 +22,10 @@ describe('unit - performance-tracker-lite job-runner', function () {
         beforeEach('setup', function (done) {
 
             this.__mocker = new Mocker();
+
+            this.__mockCommander = this.__mocker.mock(Commander.prototype)
+                .withAsyncStub("run")
+                .create();
 
             this.__mockTester = this.__mocker.mock(Tester.prototype)
                 .withSyncStub("test", new Promise(function (resolve, reject) {
@@ -72,6 +77,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var mockJob = createMockJob();
 
             var runner = new Runner(mockJob,
+                this.__mockCommander,
                 this.__mockTester,
                 this.__mockVersionUtil,
                 this.__mockStateUpdater,
@@ -85,6 +91,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
                     return done(e);
 
                 // assertions
+                expect(self.__mockCommander.recorder['test'].calls).to.equal(1);
                 expect(self.__mockTester.recorder['test'].calls).to.equal(1);
                 expect(self.__mockVersionUtil.recorder['getVersions'].calls).to.equal(1);
                 expect(self.__mockStateUpdater.recorder['updateState'].calls).to.equal(3);
@@ -117,6 +124,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var mockJob = createMockJob();
 
             var runner = new Runner(mockJob,
+                this.__mockCommander,
                 this.__mockTester,
                 this.__mockVersionUtil,
                 this.__mockStateUpdater,
@@ -158,6 +166,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var mockJob = createMockJob();
 
             var runner = new Runner(mockJob,
+                this.__mockCommander,
                 this.__mockTester,
                 this.__mockVersionUtil,
                 this.__mockStateUpdater,

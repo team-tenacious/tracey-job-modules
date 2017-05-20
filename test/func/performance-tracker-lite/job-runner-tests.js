@@ -17,11 +17,6 @@ describe('unit - performance-tracker-lite job-runner', function () {
             var self = this;
             self.__commander = new Commander();
 
-            //this.__job = {
-            //    repo: "https://github.com/happner/happn.git",
-            //    folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happn')
-            //};
-
             this.__job = {
                 id: '1495026781536_01250553-e840-4142-ace0-38cbdb0201d2',
                 message: {
@@ -41,7 +36,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
                     },
                     job_type: {
                         name: 'performance-tracker-lite',
-                        path: '/Users/grant/Projects/Tenacious/NSoft/tracey/lib/job_types/performance-tracker-lite/runner'
+                        path: '/tracey/lib/job_types/performance-tracker-lite/runner'
                     },
                     folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happn')
                 }
@@ -76,22 +71,31 @@ describe('unit - performance-tracker-lite job-runner', function () {
 
         context('start', function () {
 
-            it('successfully executes', function (done) {
+            it('successfully executes tests but does not upload to Graphite', function (done) {
 
                 var self = this;
 
-                var runner = new Runner(self.__job);
+                var runner = new Runner(self.__job, null, null, null, null, createMockUploader(), null, null, null);
 
-                runner.start(function (e, result) {
+                runner.start(function (e) {
 
                     if (e)
                         return done(e);
 
-                    //expect(result.length).not.to.be(0);
                     done();
                 });
             });
         });
+
+        function createMockUploader() {
+            return {
+                upload: function (context) {
+                    return new Promise(function (resolve, reject) {
+                        resolve(context);
+                    });
+                }
+            }
+        }
     })
     ;
 })
