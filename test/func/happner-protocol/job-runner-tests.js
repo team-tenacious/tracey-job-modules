@@ -5,9 +5,9 @@ var fs = require('fs');
 var Giteriser = require('../../../lib/utils/giteriser');
 var Comparer = require('../../../lib/utils/comparer');
 var Commander = require('../../../lib/utils/commander');
-var Runner = require("../../../lib/job-runners/happn-protocol/runner");
+var Runner = require("../../../lib/job-runners/happner-protocol/runner");
 
-describe('unit - happn-protocol job-runner', function () {
+describe('unit - happner-protocol job-runner', function () {
 
     this.timeout(1200000);
 
@@ -20,8 +20,8 @@ describe('unit - happn-protocol job-runner', function () {
             self.__commander = new Commander();
 
             this.__job = {
-                repo: "https://github.com/happner/happn-protocol.git",
-                folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happn-protocol')
+                repo: "https://github.com/happner/happner-protocol.git",
+                folder: path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos', path.sep, 'happner-protocol')
             };
 
             self.__commander.run('rm -R ' + self.__job.folder, function (err) {   // remove temp folder - CAREFUL!!!!!
@@ -69,5 +69,7 @@ describe('unit - happn-protocol job-runner', function () {
                 });
             });
         });
-    });
-});
+    })
+    ;
+})
+;
