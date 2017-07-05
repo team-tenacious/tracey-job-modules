@@ -82,7 +82,21 @@ describe('unit - performance-tracker-lite job-runner', function () {
                     if (e)
                         return done(e);
 
-                    done();
+                    var outputPath = path.join(__dirname, '..', path.sep, '..', path.sep, 'tmp', path.sep, 'repos',
+                        path.sep, 'happn', path.sep, 'test_results_6.json');
+
+                    fs.readFile(outputPath, function (err, result) {
+
+                        if(err)
+                            return done(err);
+
+                        var testResults = JSON.parse(result);
+
+                        expect(testResults.context).not.to.be(null);
+                        expect(testResults.aggregated).not.to.be(null);
+
+                        done();
+                    });
                 });
             });
         });
