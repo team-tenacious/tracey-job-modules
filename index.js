@@ -1,7 +1,8 @@
 module.exports = {
     HappnProtocolRunner: require('./lib/job-runners/happn-protocol/runner'),
     HappnerProtocolRunner: require('./lib/job-runners/happner-protocol/runner'),
-    PerformanceTrackerRunner: require('./lib/job-runners/performance-tracker-lite/runner')
+    PerformanceTrackerRunner: require('./lib/job-runners/performance-tracker-lite/runner'),
+    Utils: {}
 };
 
 var exports = module.exports;
@@ -9,7 +10,7 @@ var exports = module.exports;
 // export the utils
 require('fs').readdirSync(__dirname + '/lib/utils').forEach(function (file) {
     var name = formatName(file.replace('.js', ''));
-    exports[name] = require(__dirname + '/lib/utils/' + file);
+    exports.Utils[name] = require(__dirname + '/lib/utils/' + file);
 });
 
 function formatName(s) {
