@@ -7,42 +7,65 @@ describe('unit - archiver', function () {
 
     context('', function () {
 
+        before('setup', function (done) {
+            var Archiver = require('../../../lib/utils/archiver');
+
+            this.__archiver = new Archiver();
+
+            this.__folder1 = '/artifacts/test';
+            this.__folder2 = './artifacts/test';
+            this.__folder3 = 'artifacts/test2';
+
+            done();
+        });
+
         it('successfully creates nested directory with leading slash', function (done) {
 
-            var Archiver = require('../../../lib/utils/archiver');
-            var archiver = new Archiver();
+            var self = this;
 
-            archiver.__createDir('/artifacts/test', function (err) {
+            self.__archiver.__createDir(self.__folder1, function (err) {
                 if (err)
                     return done(err);
 
-                done();
+                self.__archiver.__removeDir(self.__folder1, function (err) {
+                    if (err)
+                        return done(err);
+
+                    done();
+                })
             });
         });
 
         it('successfully creates nested directory with dot path', function (done) {
 
-            var Archiver = require('../../../lib/utils/archiver');
-            var archiver = new Archiver();
+            var self = this;
 
-            archiver.__createDir('./artifacts/test', function (err) {
+            self.__archiver.__createDir(self.__folder2, function (err) {
                 if (err)
                     return done(err);
 
-                done();
+                self.__archiver.__removeDir(self.__folder2, function (err) {
+                    if (err)
+                        return done(err);
+
+                    done();
+                })
             });
         });
 
         it('successfully creates nested directory', function (done) {
+            var self = this;
 
-            var Archiver = require('../../../lib/utils/archiver');
-            var archiver = new Archiver();
-
-            archiver.__createDir('artifacts/test2', function (err) {
+            self.__archiver.__createDir(self.__folder3, function (err) {
                 if (err)
                     return done(err);
 
-                done();
+                self.__archiver.__removeDir(self.__folder3, function (err) {
+                    if (err)
+                        return done(err);
+
+                    done();
+                })
             });
         });
     });
