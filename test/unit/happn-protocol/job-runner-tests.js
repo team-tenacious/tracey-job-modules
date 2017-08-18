@@ -42,7 +42,17 @@ describe('unit - happn-protocol job-runner', function () {
 
                 var self = this;
 
-                var mockJob = {folder: path.sep + "blah"};
+                var mockJob = {
+                    folder: path.sep + "blah",
+                    config: {
+                        github: {
+                            user: {
+                                name: 'bob',
+                                token: '123434656'
+                            }
+                        }
+                    }
+                };
 
                 var runner = new Runner(mockJob, this.__mockCommander, this.__mockGiteriser);
 

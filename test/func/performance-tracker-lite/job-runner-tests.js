@@ -32,7 +32,13 @@ describe('unit - performance-tracker-lite job-runner', function () {
                         name: 'happn',
                         testFolder: 'test',
                         job_type: 'performance-tracker-lite',
-                        node_js: [6]
+                        node_js: [6],
+                        github: {
+                            user: {
+                                name: process.env['GITHUB_USER'],
+                                token: process.env['GITHUB_TOKEN']
+                            }
+                        }
                     },
                     job_type: {
                         name: 'performance-tracker-lite',
@@ -45,21 +51,25 @@ describe('unit - performance-tracker-lite job-runner', function () {
             self.__commander.run('rm -R ' + self.__job.message.folder, function (err) {   // remove temp folder - CAREFUL!!!!!
 
                 // make a new temp dir
-                fs.mkdirSync(self.__job.message.folder);
+                self.__commander.run('mkdir -p ' + self.__job.message.folder, function (err) {
 
-                self.__giteriser = new Giteriser(self.__job.message.folder);
-
-                // clone the repo to temp
-                self.__giteriser.clone(self.__job.message.repo, self.__job.message.folder, function (err, result) {
                     if (err)
-                        done(err);
+                        return done(err);
 
-                    // switch to the test branch
-                    self.__giteriser.checkout('master', function (err, result) {
+                    self.__giteriser = new Giteriser(self.__job.message.config.github.user, self.__job.message.repo, self.__job.message.folder);
+
+                    // clone the repo to temp
+                    self.__giteriser.clone(self.__job.message.folder, function (err, result) {
                         if (err)
                             done(err);
 
-                        done();
+                        // switch to the test branch
+                        self.__giteriser.checkout('master', function (err, result) {
+                            if (err)
+                                done(err);
+
+                            done();
+                        });
                     });
                 });
             });
@@ -87,7 +97,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
 
                     fs.readFile(outputPath, function (err, result) {
 
-                        if(err)
+                        if (err)
                             return done(err);
 
                         var testResults = JSON.parse(result);

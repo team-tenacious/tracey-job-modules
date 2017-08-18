@@ -1,6 +1,5 @@
 var expect = require('expect.js');
 var path = require('path');
-var fs = require('fs');
 
 describe('unit - ipfs-util', function () {
 
@@ -12,14 +11,10 @@ describe('unit - ipfs-util', function () {
 
             var self = this;
 
+            this.__archiver = new (require('../../../lib/utils/archiver'))();
             this.__ipfsUtil = new (require('../../../lib/utils/ipfs-util'))();
-
-            this.__ipfsUtil.init({
-                ipfs: {
-                    host: '127.0.0.1',
-                    port: 5001
-                }
-            });
+            this.__commander = new (require('../../../lib/utils/commander'))();
+            this.__filer = new (require('../../../lib/utils/filer'))();
 
             this.__testFolder = path.join(__dirname, path.sep, '..', path.sep, '..', path.sep, 'tmp');
             this.__testIpfsFolder = path.join(this.__testFolder, 'ipfs_files');
@@ -30,22 +25,59 @@ describe('unit - ipfs-util', function () {
             this.__largeTestArchiveName = 'large_test_file';
             this.__largeTestArchivePath = path.join(this.__testFolder, this.__largeTestArchiveName + '.tar');
 
-            var Archiver = require('../../../lib/utils/archiver');
-            this.__archiver = new Archiver();
+            this.__ipfsUtil.init({
+                ipfs: {
+                    host: '127.0.0.1',
+                    port: 5001
+                }
+            });
 
             // clone the test repo and npm install
-            cloneAndNpmInstall(this.__repoFolder, function (err, result) {
+            var repo = "https://github.com/happner/happn.git";
+
+            var user = {
+                name: process.env['GITHUB_USER'],
+                token: process.env['GITHUB_TOKEN']
+            };
+
+            this.__filer.deleteFolderRecursive(this.__repoFolder, function (err) {
 
                 if (err)
                     return done(err);
 
-                done();
+                console.log('making repo folder....', self.__repoFolder);
+
+                // clone from Github and run npm install
+                self.__filer.createFolderRecursive(self.__repoFolder, function (err, result) {
+
+                    if (err)
+                        return done(err);
+
+                    var giteriser = new (require('../../../lib/utils/giteriser'))(user, repo, self.__repoFolder);
+
+                    // clone the repo to temp
+                    giteriser.clone(self.__repoFolder, function (err, result) {
+
+                        if (err)
+                            done(err);
+
+                        self.__commander.run('cd ' + self.__repoFolder + ' && npm install', function (err, result) {
+
+                            if (err)
+                                return done(err);
+
+                            done();
+                        });
+                    });
+                });
             });
+
+
         });
 
         after('cleanup', function (done) {
 
-            fs.unlink(this.__repoFolder, function (err, result) {
+            this.__filer.deleteFolderRecursive(this.__repoFolder, function (err) {
                 if (err)
                     return done(err);
 
@@ -69,7 +101,7 @@ describe('unit - ipfs-util', function () {
                     console.log(hashKey);
 
                     // remove local tar
-                    fs.unlink(self.__largeTestArchivePath, function (err, result) {
+                    self.__commander.run('rm ' + self.__largeTestArchivePath, function (err, result) {
                         if (err)
                             return done(err);
 
@@ -93,34 +125,4 @@ describe('unit - ipfs-util', function () {
             });
         });
     });
-
-    function cloneAndNpmInstall(targetFolder, callback) {
-
-        var commander = new (require('../../../lib/utils/commander'))();
-
-        var repo = "https://github.com/happner/happn.git";
-
-        commander.run('mkdir -p ' + targetFolder, function (err, result) {
-
-            if (err)
-                return callback(err);
-
-            var giteriser = new (require('../../../lib/utils/giteriser'))(targetFolder);
-
-            // clone the repo to temp
-            giteriser.clone(repo, targetFolder, function (err, result) {
-
-                if (err)
-                    callback(err);
-
-                commander.run('cd ' + targetFolder + ' && npm install', function (err, result) {
-
-                    if (err)
-                        return callback(err);
-
-                    callback();
-                });
-            });
-        });
-    }
 });

@@ -19,22 +19,22 @@ describe('unit - archiver', function () {
             done();
         });
 
-        it('successfully creates nested directory with leading slash', function (done) {
-
-            var self = this;
-
-            self.__archiver.__createDir(self.__folder1, function (err) {
-                if (err)
-                    return done(err);
-
-                self.__archiver.__removeDir(self.__folder1, function (err) {
-                    if (err)
-                        return done(err);
-
-                    done();
-                })
-            });
-        });
+        //it('successfully creates nested directory with leading slash', function (done) {
+        //
+        //    var self = this;
+        //
+        //    self.__archiver.__createDir(self.__folder1, function (err) {
+        //        if (err)
+        //            return done(err);
+        //
+        //        self.__archiver.__removeDir(self.__folder1, function (err) {
+        //            if (err)
+        //                return done(err);
+        //
+        //            done();
+        //        })
+        //    });
+        //});
 
         it('successfully creates nested directory with dot path', function (done) {
 
