@@ -55,11 +55,15 @@ describe('unit - ipfs-util', function () {
 
                     var giteriser = new (require('../../../lib/utils/giteriser'))(user, repo, self.__repoFolder);
 
+                    console.log('cloning repo...');
+
                     // clone the repo to temp
                     giteriser.clone(self.__repoFolder, function (err, result) {
 
                         if (err)
                             done(err);
+
+                        console.log('running npm install...');
 
                         self.__commander.run('cd ' + self.__repoFolder + ' && npm install', function (err, result) {
 
@@ -77,7 +81,9 @@ describe('unit - ipfs-util', function () {
 
         after('cleanup', function (done) {
 
-            this.__filer.deleteFolderRecursive(this.__repoFolder, function (err) {
+            var self = this;
+
+            self.__filer.deleteFolderRecursive(self.__repoFolder, function (err) {
                 if (err)
                     return done(err);
 
@@ -89,9 +95,13 @@ describe('unit - ipfs-util', function () {
 
             var self = this;
 
+            console.log('creating archive...');
+
             self.__archiver.createArchive(self.__largeTestFolder, self.__testFolder, self.__largeTestArchiveName, function (err, result) {
                 if (err)
                     return done(err);
+
+                console.log('uploading tar...');
 
                 // add to ipfs
                 self.__ipfsUtil.uploadTar(self.__largeTestArchivePath, function (err, hashKey) {
@@ -100,15 +110,21 @@ describe('unit - ipfs-util', function () {
 
                     console.log(hashKey);
 
+                    console.log('removing local tar...');
+
                     // remove local tar
                     self.__commander.run('rm ' + self.__largeTestArchivePath, function (err, result) {
                         if (err)
                             return done(err);
 
+                        console.log('getting from IPFS...');
+
                         // get from ipfs
                         self.__ipfsUtil.getTar(hashKey, self.__largeTestArchivePath, function (err, result) {
                             if (err)
                                 return done(err);
+
+                            console.log('un-archiving...');
 
                             // unarchive
                             self.__archiver.unArchive(self.__largeTestArchivePath, self.__testUnarchivedFolder, function (err, result) {
