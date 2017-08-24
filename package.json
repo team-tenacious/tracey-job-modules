@@ -37,7 +37,7 @@
     "node-cmd": "^3.0.0",
     "simple-git": "^1.70.0",
     "stable-node-version": "^1.0.0",
-    "tar-fs": "^1.15.3",
+    "tar": "^4.0.1",
     "test-metrics": "git+https://github.com/happner/test-metrics.git",
     "text-table": "^0.2.0"
   }

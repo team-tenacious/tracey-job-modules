@@ -15,6 +15,7 @@ describe('unit - archiver', function () {
             this.__folder1 = '/artifacts/test';
             this.__folder2 = './artifacts/test';
             this.__folder3 = 'artifacts/test2';
+            this.__folder4 = 'artifacts/archive1';
 
             done();
         });
@@ -66,6 +67,56 @@ describe('unit - archiver', function () {
 
                     done();
                 })
+            });
+        });
+
+        it('successfully creates archive', function (done) {
+            var self = this;
+
+            self.__archiver.__createDir(self.__folder4, function (err) {
+                if (err)
+                    return done(err);
+
+                self.__archiver.createArchive(__dirname, self.__folder4, 'blah', function(err){
+                   if(err)
+                       return done(err);
+
+
+
+                    self.__archiver.__removeDir(self.__folder3, function (err) {
+                        if (err)
+                            return done(err);
+
+                        done();
+                    })
+                });
+            });
+        });
+
+        it('successfully unarchives', function (done) {
+            var self = this;
+
+            self.__archiver.__createDir(self.__folder4, function (err) {
+                if (err)
+                    return done(err);
+
+                self.__archiver.createArchive(__dirname, self.__folder4, 'blah', function(err){
+                   if(err)
+                       return done(err);
+
+                    self.__archiver.unArchive(self.__folder4 + '/blah.tar', self.__folder4, function(err){
+                        if(err)
+                            return done(err);
+
+                        done();
+                    });
+                });
+                //self.__archiver.__removeDir(self.__folder3, function (err) {
+                //    if (err)
+                //        return done(err);
+                //
+                //    done();
+                //})
             });
         });
     });
