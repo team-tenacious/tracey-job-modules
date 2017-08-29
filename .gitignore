@@ -2,3 +2,4 @@
 node_modules
 lib/job-runners/happn-protocol/tmp
 test/tmp
+artifacts

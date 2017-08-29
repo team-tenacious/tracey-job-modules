@@ -1,5 +1,6 @@
 var expect = require('expect.js');
 var path = require('path');
+var fs = require('fs');
 
 describe('unit - archiver', function () {
 
@@ -19,23 +20,6 @@ describe('unit - archiver', function () {
 
             done();
         });
-
-        //it('successfully creates nested directory with leading slash', function (done) {
-        //
-        //    var self = this;
-        //
-        //    self.__archiver.__createDir(self.__folder1, function (err) {
-        //        if (err)
-        //            return done(err);
-        //
-        //        self.__archiver.__removeDir(self.__folder1, function (err) {
-        //            if (err)
-        //                return done(err);
-        //
-        //            done();
-        //        })
-        //    });
-        //});
 
         it('successfully creates nested directory with dot path', function (done) {
 
@@ -70,53 +54,37 @@ describe('unit - archiver', function () {
             });
         });
 
-        it('successfully creates archive', function (done) {
+        it('successfully archives and unarchives', function (done) {
             var self = this;
 
             self.__archiver.__createDir(self.__folder4, function (err) {
                 if (err)
                     return done(err);
 
-                self.__archiver.createArchive(__dirname, self.__folder4, 'blah', function(err){
-                   if(err)
-                       return done(err);
+                var fileToArchive = path.resolve('./test'); // archive the test directory
 
+                self.__archiver.createArchive(fileToArchive, self.__folder4, 'blah', function (err) {
+                    if (err)
+                        return done(err);
 
+                    self.__archiver.unArchive(self.__folder4 + '/blah.tar', self.__folder4, function (err) {
 
-                    self.__archiver.__removeDir(self.__folder3, function (err) {
                         if (err)
                             return done(err);
 
-                        done();
-                    })
-                });
-            });
-        });
+                        var exists = fs.existsSync(path.join(self.__folder4, path.sep, 'unit'));
 
-        it('successfully unarchives', function (done) {
-            var self = this;
+                        expect(exists).to.equal(true);
 
-            self.__archiver.__createDir(self.__folder4, function (err) {
-                if (err)
-                    return done(err);
+                        self.__archiver.__removeDir(self.__folder4, function (err) {
+                            if (err)
+                                return done(err);
 
-                self.__archiver.createArchive(__dirname, self.__folder4, 'blah', function(err){
-                   if(err)
-                       return done(err);
-
-                    self.__archiver.unArchive(self.__folder4 + '/blah.tar', self.__folder4, function(err){
-                        if(err)
-                            return done(err);
-
-                        done();
+                            done();
+                        })
                     });
                 });
-                //self.__archiver.__removeDir(self.__folder3, function (err) {
-                //    if (err)
-                //        return done(err);
-                //
-                //    done();
-                //})
+
             });
         });
     });
