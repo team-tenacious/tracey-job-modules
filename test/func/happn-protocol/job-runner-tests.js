@@ -19,6 +19,8 @@ describe('unit - happn-protocol job-runner', function () {
             self.__comparer = new Comparer();
             self.__commander = new Commander();
 
+
+
             this.__job = {
                 id: '1495026781536_01250553-e840-4142-ace0-38cbdb0201d2',
                 message: {
