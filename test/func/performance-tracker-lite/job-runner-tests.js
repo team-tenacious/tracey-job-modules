@@ -20,7 +20,7 @@ describe('unit - performance-tracker-lite job-runner', function () {
             this.__job = {
                 id: '1495026781536_01250553-e840-4142-ace0-38cbdb0201d2',
                 message: {
-                    repo: 'https://github.com/happner/happn.git',
+                    repo: 'github.com/happner/happn.git',
                     event: {
                         type: 'push',
                         name: 'happn',
